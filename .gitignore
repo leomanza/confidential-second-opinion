@@ -69,3 +69,8 @@ mcp-storage-server/
 *.preworkspace
 # Lit Protocol auth storage (legacy auth material — never in the repo)
 .lit-auth-storage-*/
+
+# The pre-window Delibera docs (kept in the git history behind the
+# pre-hackathon tag and at leomanza/delibera.xyz)
+doc/
+docs/

@@ -128,9 +128,9 @@ count as baseline, they are listed here rather than claimed as new):
 | The Stellar/x402 paid-deliberation path | `coordinator-agent/src/x402/`, `x402-client/` — pre-window, **not** the path this project submits |
 | Official NEAR Intents Agent API signing vectors | `hackathon/evidence/assets/test-vectors.json` |
 
-The full baseline manifest: [docs/baseline-vs-window.md](docs/baseline-vs-window.md).
-The prior product's README is preserved verbatim at
-[docs/baseline-delibera-readme.md](docs/baseline-delibera-readme.md).
+The full baseline manifest: [hackathon/evidence/docs/baseline-vs-window.md](hackathon/evidence/docs/baseline-vs-window.md).
+The prior product's README is in the git history behind the `pre-hackathon`
+tag, and the product's own home is <https://github.com/leomanza/delibera.xyz>.
 
 ---
 
@@ -358,6 +358,9 @@ the reasoning.
 | `hackathon/evidence/fixtures/receipt-denied.json` | the `403 policy_destination_denied` — the guardrail bite |
 | `hackathon/evidence/fixtures/live-testnet/proposal-76.json` | live precedent #76 — real jurors, on-chain settlement, receipts |
 | `hackathon/evidence/docs/captured-receipts.md` | the evidence log, including what is *not* yet proven |
+| `hackathon/evidence/docs/decision-record.md` | the decisions that shaped this submission (including the ones reversed) |
+| `hackathon/evidence/docs/video-beat-map.md` | how to run the 60-second demo, beat by beat |
+| `hackathon/evidence/docs/market-listing-plan.md` | the Agent Market listing: what shipped, what the review changed |
 
 House rules for this repo (evidence honesty first, never-echo of secrets, commit
 style) are in [AGENTS.md](AGENTS.md).
@@ -382,4 +385,4 @@ style) are in [AGENTS.md](AGENTS.md).
 ## License
 
 MIT. The prior product's documentation is preserved under
-[docs/baseline-delibera-readme.md](docs/baseline-delibera-readme.md).
+the prior product's README is in the git history behind the `pre-hackathon` tag.

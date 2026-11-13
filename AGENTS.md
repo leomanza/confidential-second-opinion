@@ -34,7 +34,7 @@ Work the audit in rounds, grilling-style (`.agents/skills/grilling/`):
 - Ask numbered questions, one round at a time, each with your recommended answer (`➡️`).
 - Wait for answers before the next round. Answers reshape the questions — recompute and continue.
 - When a question can be answered by reading the skills docs or the repo's decision record
-  (`doc/restart-2026-10.md`), answer it yourself — never ask the user for a fact you can look up.
+  (`hackathon/evidence/docs/decision-record.md`), answer it yourself — never ask the user for a fact you can look up.
 - Do not write audit files until a verdict is reached and the user confirms it.
 
 ## The four gates
@@ -86,16 +86,20 @@ Sketch the real-but-simple, isolated prototype:
 
 ## Verdicts and routing (this repo)
 
-- **PASS** — the experiment doc lives in `doc/plans/agent-connect-<slug>.md` (house experiment
-  format, see the audit SKILL.md) and the build gets logged in `doc/restart-2026-10.md`.
-- **FAIL** — append a `## [Killed] <idea> — <reason>` paragraph to `doc/plans/additional.md`.
+- **PASS** — the experiment doc lives in `hackathon/evidence/docs/` (house experiment
+  format, see the audit SKILL.md) and the build gets logged in
+  `hackathon/evidence/docs/decision-record.md`.
+- **FAIL** — append a `## [Killed] <idea> — <reason>` paragraph to
+  `hackathon/evidence/docs/decision-record.md`.
 - **RESHAPE** — agree the reframe with the user, then re-run the gates before writing anything.
 - Every audit ends its final response with the ready-to-send reply defined in the audit
   SKILL.md (synopsis + 3–5 capability bullets in the user's voice).
 
 ## Project conventions
 
-- **Decision record:** `doc/restart-2026-10.md` — append milestones with dates; never delete history.
+- **Decision record:** `hackathon/evidence/docs/decision-record.md` — append milestones with
+  dates; never delete history. (The pre-window Delibera project log lives in the git history
+  behind the `pre-hackathon` tag and at leomanza/delibera.xyz.)
 - **Secrets:** `naa_…` API key and `ngt_…` grant tokens live in
   `coordinator-agent/.env.development.local` (backend only, never shipped to a browser, never
   printed, never committed). Owner keys live in the macOS keychain under service
