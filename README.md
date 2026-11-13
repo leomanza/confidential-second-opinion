@@ -119,7 +119,8 @@ count as baseline, they are listed here rather than claimed as new):
 
 | Baseline piece | Origin |
 |---|---|
-| The whole pre-window product (coordinator, jurors, NEAR settlement contract, Ensue coordination, frontend) | `leomanza/delibera.xyz` before the `pre-hackathon` tag — the same history, in this repo |
+| The deliberation engine, the coordinator, the jurors and the NEAR settlement contract | `leomanza/delibera.xyz` before the `pre-hackathon` tag — the same history, in this repo |
+| What the window **removed**: the Stellar/x402 payment path, the Filecoin archival and Storacha-backup legs, the Flow-VRF jury selection, the Shade Agents registration path, the Zama FHEVM voting contract and its 14 MB of build artifacts, the legacy Next.js app and the Phala provisioning service | cut in this window — the submission carries only what the product needs |
 | Multi-agent deliberation engine, coordinator, worker agents | this repo, pre-window |
 | Ensue Memory Network coordination | this repo, pre-window |
 | Rust coordinator contract (`promise_yield` create/resume) | `coordinator-contract/`, pre-window |

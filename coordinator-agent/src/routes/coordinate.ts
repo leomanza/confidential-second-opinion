@@ -12,7 +12,6 @@ import {
 } from '@delibera-xyz/shared';
 import { getAgentDid } from '../storacha/identity';
 import { triggerLocalCoordination } from '../monitor/memory-monitor';
-import { selectJury, verifyJurySelection } from '../vrf/jury-selector';
 
 const LOCAL_MODE = process.env.LOCAL_MODE === 'true';
 const app = new Hono();
@@ -423,11 +422,8 @@ app.get('/pending', async (c) => {
       });
     }
 
-    const { agentView } = await import('@neardefi/shade-agent-js');
-    const pendingRequests = await agentView({
-      methodName: 'get_pending_coordinations',
-      args: {},
-    });
+    const { localViewCall } = await import('../contract/local-contract');
+    const pendingRequests = (await localViewCall<unknown[]>('get_pending_coordinations', {})) ?? [];
 
     return c.json({
       count: pendingRequests.length,
@@ -639,84 +635,8 @@ app.get('/proposals/:id', async (c) => {
 });
 
 /**
- * POST /api/coordinate/select-jury
- * Select a jury from a candidate pool using Flow VRF.
- *
- * Body: {
- *   pool: string[],          // Candidate NEAR AccountIDs
- *   jurySize: number,        // Number of jurors to select
- *   deliberationId?: string  // Optional context ID
- * }
- */
-app.post('/select-jury', async (c) => {
-  try {
-    const body = await c.req.json();
-    const { pool, jurySize, deliberationId } = body;
-
-    if (!pool || !Array.isArray(pool) || pool.length === 0) {
-      return c.json({ error: 'pool must be a non-empty array of candidate IDs' }, 400);
-    }
-
-    const size = jurySize || 3;
-    if (size > pool.length) {
-      return c.json({ error: `jurySize (${size}) exceeds pool size (${pool.length})` }, 400);
-    }
-
-    console.log(`[select-jury] Selecting ${size} jurors from pool of ${pool.length}`);
-
-    const result = await selectJury(pool, size, deliberationId);
-
-    return c.json(result);
-  } catch (error) {
-    console.error('Error selecting jury:', error);
-    return c.json(
-      {
-        error: 'Failed to select jury',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      500
-    );
-  }
-});
 
 /**
- * POST /api/coordinate/verify-jury
- * Verify a jury selection is deterministic given the same seed.
- *
- * Body: {
- *   pool: string[],    // Original candidate pool
- *   jurySize: number,  // Original jury size
- *   vrfSeed: string    // The VRF seed to verify with
- * }
- */
-app.post('/verify-jury', async (c) => {
-  try {
-    const body = await c.req.json();
-    const { pool, jurySize, vrfSeed } = body;
-
-    if (!pool || !Array.isArray(pool) || !vrfSeed) {
-      return c.json({ error: 'pool and vrfSeed are required' }, 400);
-    }
-
-    const jury = verifyJurySelection(pool, jurySize || 3, vrfSeed);
-
-    return c.json({
-      jury,
-      vrfSeed,
-      verified: true,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error('Error verifying jury:', error);
-    return c.json(
-      {
-        error: 'Failed to verify jury',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      500
-    );
-  }
-});
 
 // ─── Polling-mode proxy endpoints ────────────────────────────────────────
 // Lets sandboxed / outbound-only agents (NEAR AI hosted IronClaw, browser,

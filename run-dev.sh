@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run all Shade Coordination services in dev mode
+# Run the coordinator and the jurors in dev mode
 # Usage: WORKER_COUNT=2 ./run-dev.sh   (default: 3)
 # Stop:  Ctrl+C (kills all background processes)
 
@@ -43,12 +43,10 @@ done
 
 # Start protocol API (port 3005)
 echo "Starting protocol-api on :3005..."
-cd "$ROOT/protocol-api" && npm run dev &
 PIDS+=($!)
 
 # Start frontend (port 3004)
 echo "Starting frontend on :3004..."
-cd "$ROOT/frontend" && npm run dev &
 PIDS+=($!)
 
 echo ""

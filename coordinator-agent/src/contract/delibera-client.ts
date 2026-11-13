@@ -10,7 +10,7 @@
  * account that ShadeClient registered with the agent-registry contract.
  */
 import { connect, keyStores, KeyPair, Account } from 'near-api-js';
-import { getAgent } from '../shade-client';
+import { parseSeedPhrase } from 'near-seed-phrase';
 
 const NETWORK_ID = (process.env.NEAR_NETWORK || 'testnet') as 'testnet' | 'mainnet';
 const COORDINATOR_CONTRACT_ID =
@@ -18,6 +18,9 @@ const COORDINATOR_CONTRACT_ID =
   (NETWORK_ID === 'mainnet'
     ? 'coordinator.agents-coordinator.near'
     : 'coordinator.agents-coordinator.testnet');
+const SIGNER_ID = process.env.NEAR_ACCOUNT_ID
+  || (NETWORK_ID === 'mainnet' ? 'agents-coordinator.near' : 'agents-coordinator.testnet');
+const SEED_PHRASE = process.env.NEAR_SEED_PHRASE || '';
 const NEAR_RPC =
   process.env.NEAR_RPC_JSON ||
   (NETWORK_ID === 'mainnet'
@@ -29,20 +32,23 @@ let _account: Account | null = null;
 async function getAccount(): Promise<Account> {
   if (_account) return _account;
 
-  const agent = getAgent();
-  const accountId = agent.accountId();
-  const [privateKey] = agent.getPrivateKeys({ acknowledgeRisk: true });
-
+  // The coordinator signs with its own NEAR key (the same one the local
+  // contract path uses). It used to come from the Shade agent registration,
+  // which is gone.
+  if (!SEED_PHRASE) {
+    throw new Error('NEAR_SEED_PHRASE is required for contract calls');
+  }
+  const { secretKey } = parseSeedPhrase(SEED_PHRASE);
   const keyStore = new keyStores.InMemoryKeyStore();
-  const keyPair = KeyPair.fromString(privateKey as any);
-  await keyStore.setKey(NETWORK_ID, accountId, keyPair);
+  const keyPair = KeyPair.fromString(secretKey as any);
+  await keyStore.setKey(NETWORK_ID, SIGNER_ID, keyPair);
 
   const near = await connect({
     networkId: NETWORK_ID,
     keyStore,
     nodeUrl: NEAR_RPC,
   });
-  _account = await near.account(accountId);
+  _account = await near.account(SIGNER_ID);
   return _account;
 }
 

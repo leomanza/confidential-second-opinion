@@ -20,8 +20,6 @@ import {
   localRecordWorkerSubmissions,
 } from '../contract/local-contract';
 import { backupDeliberation, isVaultConfigured } from '../storacha/vault';
-import { backupEnsueTree } from '../storacha/ensue-backup';
-import { archiveCID, logArchivalToNear } from '../filecoin/archiver';
 
 const LOCAL_MODE = process.env.LOCAL_MODE === 'true';
 
@@ -386,31 +384,9 @@ export async function triggerLocalCoordination(taskConfig: string): Promise<Tall
     // Step 6c: Back up deliberation to Storacha (encrypted, persistent)
     if (isVaultConfigured()) {
       backupDeliberation(pid, taskConfig, tally).then(cid => {
-        if (cid) {
-          console.log(`[LOCAL] Deliberation backed up to Storacha. CID: ${cid}`);
-          // Step 6e: Archive to Filecoin (cold storage)
-          archiveCID(cid).then(record => {
-            console.log(`[LOCAL] Filecoin archival: ${record.status}, deal ref: ${record.dealReference}`);
-            logArchivalToNear(record, pid).catch(() => {});
-          }).catch(err =>
-            console.warn('[LOCAL] Filecoin archival failed (non-fatal):', err)
-          );
-        }
+        if (cid) console.log(`[LOCAL] Deliberation backed up to Storacha. CID: ${cid}`);
       }).catch(err =>
         console.warn('[LOCAL] Storacha deliberation backup failed (non-fatal):', err)
-      );
-
-      // Step 6d: Serialize full Ensue tree and back up to Storacha
-      backupEnsueTree().then(cid => {
-        if (cid) {
-          console.log(`[LOCAL] Ensue tree backed up to Storacha. CID: ${cid}`);
-          // Archive Ensue tree to Filecoin too
-          archiveCID(cid).then(record => {
-            console.log(`[LOCAL] Ensue tree Filecoin archival: ${record.status}, deal ref: ${record.dealReference}`);
-          }).catch(() => {});
-        }
-      }).catch(err =>
-        console.warn('[LOCAL] Ensue tree backup failed (non-fatal):', err)
       );
     }
 
@@ -628,29 +604,9 @@ async function processCoordination(
     // Back up deliberation to Storacha (encrypted, persistent)
     if (isVaultConfigured()) {
       backupDeliberation(proposalId, request.task_config, tally).then(cid => {
-        if (cid) {
-          console.log(`Deliberation backed up to Storacha. CID: ${cid}`);
-          archiveCID(cid).then(record => {
-            console.log(`Filecoin archival: ${record.status}, deal ref: ${record.dealReference}`);
-            logArchivalToNear(record, proposalId).catch(() => {});
-          }).catch(err =>
-            console.warn('Filecoin archival failed (non-fatal):', err)
-          );
-        }
+        if (cid) console.log(`Deliberation backed up to Storacha. CID: ${cid}`);
       }).catch(err =>
         console.warn('Storacha deliberation backup failed (non-fatal):', err)
-      );
-
-      // Serialize full Ensue tree and back up to Storacha
-      backupEnsueTree().then(cid => {
-        if (cid) {
-          console.log(`Ensue tree backed up to Storacha. CID: ${cid}`);
-          archiveCID(cid).then(record => {
-            console.log(`Ensue tree Filecoin archival: ${record.status}, deal ref: ${record.dealReference}`);
-          }).catch(() => {});
-        }
-      }).catch(err =>
-        console.warn('Ensue tree backup failed (non-fatal):', err)
       );
     }
 

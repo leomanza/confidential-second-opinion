@@ -3,6 +3,8 @@ node_modules/
 
 # Build outputs
 frontend/.next/
+.next/
+*.tsbuildinfo
 coordinator-contract/target/
 registry-contract/target/
 factory-contract/target/
@@ -65,3 +67,5 @@ mcp-storage-server/
 
 # Pre-workspace lockfile snapshots (superseded by the bun workspace lock)
 *.preworkspace
+# Lit Protocol auth storage (legacy auth material — never in the repo)
+.lit-auth-storage-*/
