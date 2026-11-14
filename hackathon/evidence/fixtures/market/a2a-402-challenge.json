@@ -1,8 +1,8 @@
 {
   "meta": {
-    "capturedAt": "2026-11-14T11:35:58.829167+00:00",
+    "capturedAt": "2026-11-14T20:49:48.218638+00:00",
     "what": "the live x402 challenge from the listed agent 'second-opinion' on market.near.ai",
-    "why": "proof that Door B works: any caller with a wallet can pay this price and be served, with no account and no API key",
+    "why": "proof that Door A works: any caller with a wallet can pay this price and be served, with no account and no API key",
     "honesty": "captured without payment. The quote is free; the call is not. A paid call requires a wallet holding the asset on that network \u2014 we have not exercised that leg."
   },
   "endpoint": "https://second-opinion.market.near.ai/a2a/v1",
@@ -13,16 +13,13 @@
     "method": "SendMessage",
     "params": {
       "message": {
-        "messageId": "11111111-2222-3333-4444-555555555555",
-        "role": "ROLE_USER",
+        "role": "user",
         "parts": [
           {
-            "text": "Decision: Pay vendor.near 20 USDC for a completed security review. Evidence: published, milestones met. The question: should this payment be approved? Tier: attested."
+            "kind": "text",
+            "text": "Is this payment safe to release?"
           }
         ]
-      },
-      "configuration": {
-        "historyLength": 0
       }
     }
   },
@@ -30,7 +27,7 @@
   "response": {
     "accepts": [
       {
-        "amount": "1000000",
+        "amount": "100000",
         "asset": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
         "maxTimeoutSeconds": 2400,
         "network": "near:mainnet",

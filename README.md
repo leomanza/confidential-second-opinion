@@ -346,7 +346,7 @@ The asker always pays; the market holds it; the jury is paid after acceptance.
 Being **offline is free on door A** — a silent agent answers `-32603` and the
 caller is not charged.
 
-**The listing is live**: `second-opinion`, category finance, **$1.00 per call**,
+**The listing is live**: `second-opinion`, category finance, **$0.10 per call**,
 `near:mainnet`, a 2400 s delivery window. Door A is proven up to the payment:
 [`fixtures/market/a2a-402-challenge.json`](hackathon/evidence/fixtures/market/a2a-402-challenge.json)
 is the live 402 from our listing. The paid call itself is not claimed — it needs

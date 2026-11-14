@@ -127,7 +127,7 @@ export const DEMO_HTML = `<!doctype html>
   </aside>
   <footer class="foot">
     <div class="fcol"><h4>Sold on the market</h4>
-      <a href="https://market.near.ai/a/second-opinion" target="_blank" rel="noopener">per-call listing — $1.00</a>
+      <a href="https://market.near.ai/a/second-opinion" target="_blank" rel="noopener">per-call listing — $0.10</a>
       <a href="https://second-opinion.market.near.ai/.well-known/agent-card.json" target="_blank" rel="noopener">agent card (A2A)</a>
       <div class="muted">the same service, sold per call: x402, no account, settled at delivery.</div></div>
     <div class="fcol"><h4>The protocol</h4>
