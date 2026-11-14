@@ -451,6 +451,22 @@ demoRoutes.post('/demo/:sid/ratify', async (c) => {
 demoRoutes.post('/demo/:sid/force-spend', async (c) => {
   const session = sessions.get(c.req.param('sid'));
   if (!session) return c.json({ error: 'unknown session' }, 404);
+  if (session.mode === 'replay') {
+    // Replay serves the CAPTURED refusal verbatim — no client call, no simulated
+    // policy check, no path by which anything could move. That is the point of
+    // the zero-spend demo: every rendered number is a real receipt.
+    const r = RECEIPTS.refusal;
+    note(session, `wallet refused: ${r.code} (replay)`);
+    ev(session, {
+      phase: 'refusal', title: 'Wallet refused — 403 before dispatch', source: 'replay',
+      api: { method: 'POST', path: `/v1/agents/${session.agentId}/transfer`, idempotencyKey: `tr:${session.id}:bite` },
+      code: r.code,
+      explorer: RECEIPTS.explorer.agentAccount,
+      layer: r.layer,
+      note: `${r.replayNote} · REPLAY of the 2026-10-19 live refusal`,
+    });
+    return c.json({ refused: true, code: r.code, message: r.message, events: session.events, receipt: r });
+  }
   if (session.mode === 'live') {
     // The bite must target a destination that is NOT whitelisted — if it were,
     // the "refusal" would move real funds instead of refusing them.
@@ -491,15 +507,10 @@ demoRoutes.post('/demo/:sid/force-spend', async (c) => {
       phase: 'refusal', title: 'Wallet refused — 403 before dispatch', source: src(session.mode),
       api: { method: 'POST', path: `/v1/agents/${session.agentId}/transfer`, idempotencyKey: `tr:${session.id}:bite` },
       code: e.code,
-      explorer: session.mode === 'replay' ? RECEIPTS.explorer.agentAccount : undefined,
-      layer: session.mode === 'replay'
-        ? RECEIPTS.refusal.layer
-        : 'owner-signed destinations (Agent Connect API pre-dispatch check)',
-      note: session.mode === 'replay'
-        ? `${RECEIPTS.refusal.replayNote} · REPLAY of the 2026-10-19 live refusal`
-        : `Nothing moved. ${target} is not on the owner-signed whitelist, so the API refused before dispatch.`,
+      layer: 'owner-signed destinations (Agent Connect API pre-dispatch check)',
+      note: `Nothing moved. ${target} is not on the owner-signed whitelist, so the API refused before dispatch.`,
     });
-    return c.json({ refused: true, code: e.code, message: e.message, events: session.events, receipt: session.mode === 'replay' ? RECEIPTS.refusal : undefined });
+    return c.json({ refused: true, code: e.code, message: e.message, events: session.events });
   }
 });
 
