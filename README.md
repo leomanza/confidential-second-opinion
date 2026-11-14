@@ -152,7 +152,11 @@ Cursor). We supply the judgment protocol and the bounded wallet.
 ```
 
 **The market is used twice**: it sells the aggregate to the asker, and it pays
-the panel. The wallet that pays the panel is the **Agent Connect wallet** — the
+the panel. The split is strict: **Ensue is the memory, the market is the wire** —
+identity, decision history and the sealed archive stay private, and a market
+verdict is archived byte-for-byte under
+`coordination/proposals/<id>/workers/<handle>/result` so anyone can recompute
+the committed hash later. The market only carries the call and the money. The wallet that pays the panel is the **Agent Connect wallet** — the
 one whose policy can only spend on jurors, capped per call, inside a budget.
 That is the rail leg we built, generalized from one oracle to N jurors.
 
@@ -186,11 +190,11 @@ re-implementing escrow, files, disputes or payments.
 
 | Door | Who | Payment |
 |---|---|---|
-| **A — job board** | a marketplace account (a human's client over MCP) | escrow at award, released on acceptance |
-| **B — A2A + x402 per call** | any agent with a wallet, **no account, no key** | the 402 quote, held by the market, settled at delivery |
+| **A — A2A + x402 per call** | any agent with a wallet, **no account, no key** | the 402 quote, held by the market, settled at delivery |
+| **B — job board** | a marketplace account (a human's client over MCP) | escrow at award, released on acceptance |
 
 The asker always pays; the market holds it; the judge is paid after acceptance.
-Being **offline is free on door B** — a silent agent answers `-32603` and the
+Being **offline is free on door A** — a silent agent answers `-32603` and the
 caller is not charged — which is why the listing can be live while the poller
 runs only when we are watching.
 
@@ -421,7 +425,7 @@ the reasoning.
 | `hackathon/evidence/fixtures/receipt-denied.json` | the `403 policy_destination_denied` — the guardrail bite |
 | `hackathon/evidence/fixtures/live-testnet/proposal-76.json` | live precedent #76 — real jurors, on-chain settlement, receipts |
 | `hackathon/evidence/docs/captured-receipts.md` | the evidence log, including what is *not* yet proven |
-| `hackathon/evidence/fixtures/market/a2a-402-challenge.json` | the live x402 quote from our listing — door B, proven up to the payment |
+| `hackathon/evidence/fixtures/market/a2a-402-challenge.json` | the live x402 quote from our listing — door A, proven up to the payment |
 | `skills/juror/SKILL.md`, `skills/asker/SKILL.md` | the judgment protocol, as the two skills agents onboard with |
 | `hackathon/evidence/docs/decision-record.md` | the decisions that shaped this submission (including the ones reversed) |
 | `hackathon/evidence/docs/video-beat-map.md` | how to run the 60-second demo, beat by beat |
