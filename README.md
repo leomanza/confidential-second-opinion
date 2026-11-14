@@ -30,7 +30,8 @@ Everything before that signature is furnace-tested refusal.
 > `pre-hackathon` tag, and the window diff is one command:
 >
 > ```sh
-> git diff pre-hackathon..hackathon    # 74 files, ~11,200 insertions
+> git diff pre-hackathon..main    # 580 files changed: the policy rail and the
+>                                # evidence harness added, the pre-window code cut
 > ```
 >
 > (A shallow clone — `git clone --depth 1` — has no tag; run `git fetch --tags`
@@ -98,8 +99,8 @@ that is baseline and is listed below; the baseline tag makes the boundary
 machine-checkable:
 
 ```sh
-git diff pre-hackathon..hackathon            # exactly the window's work
-git log --oneline pre-hackathon..hackathon
+git diff pre-hackathon..main                # exactly the window's work
+git log --oneline pre-hackathon..main
 ```
 
 | New in this window | Where |
@@ -107,7 +108,7 @@ git log --oneline pre-hackathon..hackathon
 | **The Agent Connect policy rail** — owner-signed policy, destination whitelist, USD budget, per-transaction cap, `403` refusal, `UNCERTAIN` polling | `coordinator-agent/src/agent-connect/client.ts` |
 | **The live session UI** — every step renders its API receipt; the owner signature is shown, not hidden; the 403 shows its full anatomy; the last screen is a copyable evidence receipt | `coordinator-agent/src/agent-connect/demo-page.ts`, `demo-routes.ts` |
 | **The verdict oracle seam** — proposal in → verdict card out, settlement untouched | `coordinator-agent/src/agent-connect/verdict-oracle.ts` |
-| **The evidence harness** — judge sequence, capsule (`cso-capsule/1`), offline digest verifier, no-key scanner, 18 invariant tests | `hackathon/evidence/` |
+| **The evidence harness** — judge sequence, capsule (`cso-capsule/1`), offline digest verifier, no-key scanner, 21 invariant tests | `hackathon/evidence/` |
 | **A live end-to-end precedent on testnet** — proposal **#80**: three real jurors voted independently and **one dissented** (Approved 2-1, quorum 2/3), `record_worker_submissions` + `coordinator_resume` settled on-chain, and each juror's `sha256(result)` still equals the contract's `result_hash` | `hackathon/evidence/fixtures/live-testnet/proposal-80.json` |
 | **The guardrail biting live** — the Agent Connect API refuses a live transfer to a destination outside the owner-signed whitelist: `403 policy_destination_denied`, provider's own body and `request_id` captured | `hackathon/evidence/fixtures/agent-connect/live-rail.json` |
 | **TEE proof for the jurors' reasoning** — the NEAR AI Cloud signature of each juror's reply is verified with **NEAR's own official verifier**, and the signing key is shown to be bound to genuine Intel TDX hardware | `npm run verify:tee` in `hackathon/evidence` |
