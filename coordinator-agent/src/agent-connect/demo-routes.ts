@@ -279,7 +279,10 @@ demoRoutes.get('/demo/:sid/verdict', (c) => {
   const session = sessions.get(c.req.param('sid'));
   if (!session?.verdictId) return c.json({ error: 'no deliberation yet' }, 404);
 
-  if (session.mode === 'replay') {
+  // replay AND mock both serve the captured precedent: the propose path parks
+  // the fixture id for both modes, and mock is what `npm run dev` without an
+  // env file produces — it must not dead-end on a 404.
+  if (session.mode !== 'live') {
     if ((session.deliberationAt || 0) > Date.now()) return c.json({ state: 'deliberating' }, 409);
     const disclosure = session.disclosure || 'attested';
     const base = {

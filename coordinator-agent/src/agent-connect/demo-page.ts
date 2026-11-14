@@ -79,6 +79,17 @@ export const DEMO_HTML = `<!doctype html>
   .sigbox { border:1px dashed #4a3d1c; border-radius:10px; padding:10px 12px; margin:10px 0; font-family:ui-monospace,monospace; font-size:11px; color:var(--amb); white-space:pre-wrap; word-break:break-all; }
   .copy { border:1px solid #3a3d44; background:transparent; color:var(--mut); border-radius:6px; font-size:10px; padding:2px 7px; cursor:pointer; margin-left:6px; }
   .copy:hover { color:var(--ink); }
+  a.chip:hover { color:var(--ink); text-decoration:none; border-color:#3a3d44; }
+  .foot { grid-column:1/-1; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; border-top:1px solid var(--line); margin-top:28px; padding-top:18px; }
+  @media (max-width:980px){ .foot { grid-template-columns:1fr; } }
+  .fcol h4 { margin:0 0 6px; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--dim); }
+  .fcol a { display:block; font-size:12.5px; margin:3px 0; }
+  .fcol .muted { font-size:11.5px; margin-top:7px; max-width:34ch; }
+  .vbox { border:1px solid var(--line); border-radius:10px; background:var(--panel2); padding:10px 13px; margin:10px 0; }
+  .vh { font-size:11px; letter-spacing:.6px; text-transform:uppercase; color:var(--dim); margin-bottom:5px; }
+  .vlist { margin:0; padding-left:18px; font-size:12px; color:var(--mut); }
+  .vlist li { margin:3px 0; }
+  .vlist b { color:var(--ink); font-weight:600; }
   /* live log — the terminal pane the Delibera app got right */
   .logbox { background:#08090b; border:1px solid #262b31; border-radius:8px; padding:7px 8px; max-height:280px; overflow-y:auto; }
   .logbox:empty::after { content:'waiting for the first call…'; color:#4c545c; font-size:10.5px; }
@@ -95,7 +106,7 @@ export const DEMO_HTML = `<!doctype html>
 <div class="wrap">
   <main id="main">
     <h1>Agents buy their own second opinions — privately.</h1>
-    <p class="sub">Confidential Second Opinion — a wallet whose only autonomous power is buying a second opinion, on NEAR Agent Connect. A wallet whose only autonomous power is buying a confidential verdict from a 3-juror AI council; everything else waits for the owner's signature. Receipts on-chain, opinions sealed. Verifiable receipts on the right.</p>
+    <p class="sub">Confidential Second Opinion, on NEAR Agent Connect — a wallet whose only autonomous power is buying a confidential verdict from a 3-juror AI council; everything else waits for the owner's signature. Receipts on-chain, opinions sealed. Verifiable receipts on the right.</p>
     <div class="bar" id="chips"><span class="chip">booting…</span></div>
     <div class="roles" id="roles"></div>
     <div class="steps" id="steps">
@@ -114,6 +125,20 @@ export const DEMO_HTML = `<!doctype html>
     <div class="railcard"><h4>Live log</h4><div class="logbox" id="log"></div></div>
     <!-- honesty card (removed at user request) — badges data still served by /demo/session -->
   </aside>
+  <footer class="foot">
+    <div class="fcol"><h4>Sold on the market</h4>
+      <a href="https://market.near.ai/a/second-opinion" target="_blank" rel="noopener">per-call listing — $1.00</a>
+      <a href="https://second-opinion.market.near.ai/.well-known/agent-card.json" target="_blank" rel="noopener">agent card (A2A)</a>
+      <div class="muted">the same service, sold per call: x402, no account, settled at delivery.</div></div>
+    <div class="fcol"><h4>The protocol</h4>
+      <a href="https://github.com/leomanza/confidential-second-opinion/blob/main/skills/juror/SKILL.md" target="_blank" rel="noopener">juror skill</a>
+      <a href="https://github.com/leomanza/confidential-second-opinion/blob/main/skills/asker/SKILL.md" target="_blank" rel="noopener">asker skill</a>
+      <div class="muted">how a stranger joins the jury — and how a buyer checks the card instead of trusting it.</div></div>
+    <div class="fcol"><h4>Verify, don't trust</h4>
+      <a href="https://github.com/leomanza/confidential-second-opinion#re-check-the-whole-precedent-yourself" target="_blank" rel="noopener">re-check precedent #76</a>
+      <a href="https://github.com/leomanza/confidential-second-opinion/blob/main/hackathon/evidence/scripts/verify-near-ai-tee.ts" target="_blank" rel="noopener">TEE verifier</a>
+      <div class="muted">on-chain tally · sha256 recomputation · Intel TDX. No claim rests on this app.</div></div>
+  </footer>
 </div>
 <script>
 var $=function(i){ return document.getElementById(i); };
@@ -122,6 +147,14 @@ var COPYSTORE=[];
 function copyText(i){ var t=COPYSTORE[i]; if(t&&navigator.clipboard) navigator.clipboard.writeText(t); }
 function stash(t){ COPYSTORE.push(t); return COPYSTORE.length-1; }
 
+var LINK={
+  listing:'https://market.near.ai/a/second-opinion',
+  card:'https://second-opinion.market.near.ai/.well-known/agent-card.json',
+  juror:'https://github.com/leomanza/confidential-second-opinion/blob/main/skills/juror/SKILL.md',
+  asker:'https://github.com/leomanza/confidential-second-opinion/blob/main/skills/asker/SKILL.md',
+  tee:'https://github.com/leomanza/confidential-second-opinion/blob/main/hackathon/evidence/scripts/verify-near-ai-tee.ts',
+  precedent:'https://github.com/leomanza/confidential-second-opinion#re-check-the-whole-precedent-yourself'
+};
 var S={ sessionId:null, mode:null, events:[], verdict:null, policy:null, balances:null, agent:null, vendors:null, presets:[] };
 function setStep(n){ for(var i=1;i<=5;i++){ var el=$('st'+i); if(!el) continue; el.className='st'+(i===n?' on':(i<n?' done':'')); } }
 async function api(path,opts){
@@ -249,7 +282,8 @@ async function boot(){
   var chips=(d.badges||[]);
   var modeLabel=(d.mode==='live')?'LIVE':((d.mode==='replay')?'fixtures':'mock');
   $('chips').innerHTML='<span class="chip '+((d.mode==='live')?'ok':'')+'">'+esc(modeLabel)+'</span>'
-    +(d.mode==='replay'?'<span class="dim" style="font-size:10.5px">full real run: restart the server without AGENT_CONNECT_FIXTURES</span>':'');
+    +(d.mode==='replay'?'<span class="dim" style="font-size:10.5px">full real run: restart the server without AGENT_CONNECT_FIXTURES</span>':'')
+    +'<a class="chip" href="https://market.near.ai/a/second-opinion" target="_blank" rel="noopener">on the market \u2197</a>';
   var roles='';
   for(var j=0;j<(d.roles||[]).length;j++){ roles+='<div class="role"><b>'+esc(d.roles[j].role)+'</b>'+esc(d.roles[j].who)+'</div>'; }
   $('roles').innerHTML=roles;
@@ -322,8 +356,13 @@ function showVerdict(v){
     ?'<p class="dim">what this proves: the council existed (3 distinct DIDs), each juror\\'s commitment landed BEFORE the tally, and the tally settled on-chain. Opinions stay sealed — unsealing later only happens with juror consent.</p>'
     :'<p class="dim">the chain holds the juror DIDs and result hashes; the reasoning was released only to the owner\\'s app — and sha256(released vote+reasoning) matches each on-chain result hash.</p>';
   $('app').innerHTML='<div class="card"><h3 class="'+(ok?'ok':'bad')+'">'+esc(v.decision)+' · '+esc(v.approved)+'–'+esc(v.rejected)+'</h3>'
-    +'<p class="muted">purchased as <b>'+esc(v.disclosure||'attested')+'</b> · settled on-chain · <a href="'+esc(v.explorer||'#')+'" target="_blank">'+esc(v.settledOn||'coordinator.agents-coordinator.testnet')+'</a> · proposal #'+esc(String(v.proposalId))+' · settled at '+esc((v.settledAt||'').slice(0,19)||'')+'</p>'
+    +'<p class="muted">purchased as <b>'+esc(v.disclosure||'attested')+'</b> · <span class="pill priv">memory: persistent</span> · settled on-chain · <a href="'+esc(v.explorer||'#')+'" target="_blank" rel="noopener">'+esc(v.settledOn||'coordinator.agents-coordinator.testnet')+'</a> · proposal #'+esc(String(v.proposalId))+' · settled at '+esc((v.settledAt||'').slice(0,19)||'')+'</p>'
     +verSem
+    +'<div class="vbox"><div class="vh">Check it — the app should not be trusted</div><ol class="vlist">'
+    +'<li><b>the tally</b> — <a href="'+esc(v.explorer||'#')+'" target="_blank" rel="noopener">proposal #'+esc(String(v.proposalId))+'</a> is <i>Finalized</i> with '+esc(String(ju.length))+' distinct juror DIDs and their result hashes.</li>'
+    +'<li><b>the hashes</b> — <span class="mono">sha256(vote + reasoning)</span> must equal each on-chain hash; the bytes are archived in Ensue, and <a href="'+LINK.asker+'#verify-it-yourself" target="_blank" rel="noopener">the asker skill</a> walks the recomputation.</li>'
+    +'<li><b>the hardware</b> — <a href="'+LINK.tee+'" target="_blank" rel="noopener">verify-near-ai-tee.ts</a> recovers each reply key and binds it to an Intel TDX quote with NEAR\u2019s official verifier.</li>'
+    +'</ol></div>'
     +'<div class="lanes">'+j+'</div><div class="row">'
     +(ok?'<button id="ratify">Ratify with one signature</button>':'<button id="force" class="ghost">Try the spend anyway (the bite)</button>')
     +'</div></div>';
