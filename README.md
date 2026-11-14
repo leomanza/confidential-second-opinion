@@ -274,15 +274,11 @@ receipt is honestly marked "omitted until live", not faked.
 | **Supply** — a new juror | the [juror skill](skills/juror/SKILL.md) plus a listing with the exact tag | a persistent identity, private memory, a history, a payable account |
 | **Integration** — another service buying judgment | the verdict-oracle seam: a brief in, a card out; settlement untouched — the same seam our market worker uses | nothing of ours to host |
 
-There is no sales motion and no invite list. Buyers find the listing in the
-catalog or learn the purchase from the skill; jurors join by meeting a published
-bar, not by being approved by us. The pool and the buyers are discovered the same
-way — the marketplace catalog — and the engine itself is open source.
-
-The buyers we built for: a treasury agent about to release a milestone payout, a
-procurement agent about to pay an invoice, a grants program about to fund a
-deliverable, a security triage about to approve an exception. All four share one
-shape: a spend someone will later have to justify.
+No sales motion and no invite list: buyers find the listing or learn the purchase
+from the skill; jurors join by meeting a published bar, not by our approval. The
+buyers we built for — a treasury releasing a milestone payout, procurement paying
+an invoice, a grants program funding a deliverable, security triage approving an
+exception — share one shape: a spend someone will have to justify.
 
 ## The market protocol — how the jury assembles
 
@@ -313,7 +309,10 @@ committed hash later. The market carries the call and the money, nothing else.
 ### The catalog is the jury registry
 
 There is no registry contract. An agent joins the pool by listing itself with the
-exact tag, and the panel is assembled by querying the catalog:
+exact tag, and the panel is assembled by querying the catalog. One constraint we
+hit ourselves: the catalog's **Discover excludes self-registered agents until a
+human adopts them** — such a listing is live and directly callable, yet absent
+from search. Adoption is one click from the buyer-side console.
 
 ```sh
 cd hackathon/evidence && npm run panel:market
@@ -362,10 +361,6 @@ a funded wallet, and that leg is named as unexercised.
 | `hackathon/evidence/fixtures/proposal-74.json` | the main capture: verdict #74, **Approved 3-0**, settled on the testnet coordinator; the prose shown in the demo is a reconstructed narrative |
 | `hackathon/evidence/fixtures/live-testnet/proposal-80.json` | the reference live run: three jurors, one dissented, **Approved 2-1**, `record_worker_submissions` + `coordinator_resume` settled on-chain |
 | `hackathon/evidence/fixtures/live-testnet/proposal-76.json` | an earlier live run whose **recorded** tally is wrong (`Rejected 0-3`); the true votes were Approved 3-0 — the receipt carries the full `knownIssue` |
-| `hackathon/evidence/fixtures/policy.json` | the owner-signed policy: revision 4, `APPLIED`, `provider_policy_synced: true` |
-| `hackathon/evidence/fixtures/receipt-approved.json` | $0.01 USDC `intents_transfer`, `UNCERTAIN` → `SUCCESS` |
-| `hackathon/evidence/fixtures/receipt-denied.json` | the `403 policy_destination_denied` — the guardrail bite, with the provider's own body and `request_id` |
-| `hackathon/evidence/fixtures/agent-connect/live-rail.json` | the live refusal and the policy read-back |
 | `hackathon/evidence/fixtures/market/a2a-402-challenge.json` | the live x402 quote from our listing — door A, proven up to the payment |
 | `hackathon/evidence/fixtures/tee/` | the jurors' NEAR AI Cloud proofs (signature + Intel TDX quote per juror) |
 | `skills/juror/SKILL.md`, `skills/asker/SKILL.md` | the judgment protocol, as the two skills agents onboard with |
@@ -389,12 +384,11 @@ claim drifts from its fixture.
   marketplace is young — most listings have never been hired — so this is a
   distribution surface, not a revenue claim.
 - The TEE proof covers the inference (3/3 signatures, 3/3 Intel TDX); the NVIDIA
-  GPU verdict is reported by the API, not re-verified locally.
+  GPU verdict is reported by the API, not re-verified locally. The demo's
+  per-juror prose for the main capture is reconstructed — the commitments are real.
 - The recorded tally of precedent #76 is wrong and says so. It is disclosed, not
   hidden: the contract cannot amend a finalized proposal, so a fresh run (#80)
   settles the correct one, and the parsing bug is fixed and pinned by a test.
-- The demo's per-juror prose for the main capture is reconstructed, not the
-  sealed text. The commitments are real.
 
 ---
 

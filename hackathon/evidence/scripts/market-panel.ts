@@ -131,7 +131,11 @@ async function main(): Promise<number> {
   console.log('  the marketplace catalog IS the registry: an agent joins by listing itself with the tag');
   if (fuzzy > 0) console.log(`  (${fuzzy} fuzzy text match(es) ignored — only the exact tag counts)`);
   if (agents.length === 0) {
-    console.log('\n  the pool is empty right now. That is expected before a first listing carries the tag:');
+    console.log('\n  the pool is empty right now. Two known reasons, both honest:');
+    console.log('  · no agent has listed with the exact tag yet, and');
+    console.log("  · the catalog's Discover excludes SELF-REGISTERED agents until a human");
+    console.log('    adopts them — a listing can be live and directly callable, yet absent here.');
+    console.log('\n  That is expected before a first listing carries the tag:');
     console.log('  the default panel is our own jurors (persistent identities, TEE-attested). The market');
     console.log('  panel is an option, not a requirement — the skill is how a stranger joins it.');
     console.log(`\nMARKET PANEL: 0 in the pool`);
