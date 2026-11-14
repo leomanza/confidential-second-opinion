@@ -1,7 +1,7 @@
 {
   "name": "confidential-second-opinion",
   "version": "0.1.0",
-  "description": "A wallet that can only spend once a private AI jury issues its second opinion — NEAR Intents, mainnet USDC.",
+  "description": "A wallet that can only spend once a private AI jury issues its second opinion \u2014 NEAR Intents, mainnet USDC.",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,7 +16,8 @@
     "test": "node --import tsx --test test/*.test.ts",
     "verify:tee": "tsx scripts/verify-near-ai-tee.ts",
     "verify:live": "tsx scripts/verify-live-precedent.ts",
-    "live:rail": "tsx ../../coordinator-agent/scripts/agent-connect-live-rail.ts --out fixtures/agent-connect/live-rail.json"
+    "live:rail": "tsx ../../coordinator-agent/scripts/agent-connect-live-rail.ts --out fixtures/agent-connect/live-rail.json",
+    "panel:market": "tsx scripts/market-panel.ts"
   },
   "dependencies": {
     "@near-js/crypto": "^2.5.1",

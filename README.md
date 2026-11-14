@@ -135,6 +135,68 @@ tag, and the product's own home is <https://github.com/leomanza/delibera.xyz>.
 
 ---
 
+## The market protocol — how the jury assembles
+
+The Agent Market is the coordination substrate, not a customer list. It supplies
+what we should never build ourselves: **an A2A host and card per agent**, **x402
+per-call payment with escrow**, **disputes with a resolver**, **reputation**, and
+**distribution** (the catalog, Discover, and buyer tools inside Claude, Codex,
+Cursor). We supply the judgment protocol and the bounded wallet.
+
+```
+ ASKER (agent or human)              US (the aggregate service)            JURORS (market agents)
+ "should I pay this?"  ──hire+pay──▶  case → select N → collect → seal  ──x402──▶  deliberate, seal,
+                       escrow         → commit hashes → settle on NEAR  (market)   commit a hash
+                                        ▲                                      │
+                                        └────────── verdict card ◀─────────────┘
+```
+
+**The market is used twice**: it sells the aggregate to the asker, and it pays
+the panel. The wallet that pays the panel is the **Agent Connect wallet** — the
+one whose policy can only spend on jurors, capped per call, inside a budget.
+That is the rail leg we built, generalized from one oracle to N jurors.
+
+### The catalog is the jury registry
+
+There is no registry contract. An agent joins the pool by listing itself with the
+exact tag, and the panel is assembled by querying the catalog:
+
+```sh
+cd hackathon/evidence && npm run panel:market
+npm run panel:market -- --quote second-opinion    # the live x402 price of one call
+```
+
+The catalog's text search is fuzzy — it matched "confidential" and "opinion"
+separately — so the pool filter is the **exact tag**, client-side. That is why
+the juror skill makes the tag part of the protocol.
+
+### Two skills, and they are the onboarding
+
+| Skill | For | Adds |
+|---|---|---|
+| [`skills/juror`](skills/juror/SKILL.md) | a new agent joining the jury | the judgment protocol: deliberate alone, commit before the tally, honour the disclosure tier, attest, deliver the card |
+| [`skills/asker`](skills/asker/SKILL.md) | an agent or a human buying an opinion | the brief format, the two doors, how to read and verify the card |
+
+Both compose with the marketplace's own skills
+([worker](https://market.near.ai/skill/SKILL.md),
+[caller](https://market.near.ai/skill/x402-caller/SKILL.md)) instead of
+re-implementing escrow, files, disputes or payments.
+
+### The two doors, and who pays
+
+| Door | Who | Payment |
+|---|---|---|
+| **A — job board** | a marketplace account (a human's client over MCP) | escrow at award, released on acceptance |
+| **B — A2A + x402 per call** | any agent with a wallet, **no account, no key** | the 402 quote, held by the market, settled at delivery |
+
+The asker always pays; the market holds it; the judge is paid after acceptance.
+Being **offline is free on door B** — a silent agent answers `-32603` and the
+caller is not charged — which is why the listing can be live while the poller
+runs only when we are watching.
+
+Captured: [`fixtures/market/a2a-402-challenge.json`](hackathon/evidence/fixtures/market/a2a-402-challenge.json)
+— the live challenge from our listing (`$1.00`, `near:mainnet`, a 2400 s window).
+
 ## Distribution — where verdicts are sold
 
 **The verdict service is prepared for the [NEAR Agent Market](https://market.near.ai)** —
@@ -359,6 +421,8 @@ the reasoning.
 | `hackathon/evidence/fixtures/receipt-denied.json` | the `403 policy_destination_denied` — the guardrail bite |
 | `hackathon/evidence/fixtures/live-testnet/proposal-76.json` | live precedent #76 — real jurors, on-chain settlement, receipts |
 | `hackathon/evidence/docs/captured-receipts.md` | the evidence log, including what is *not* yet proven |
+| `hackathon/evidence/fixtures/market/a2a-402-challenge.json` | the live x402 quote from our listing — door B, proven up to the payment |
+| `skills/juror/SKILL.md`, `skills/asker/SKILL.md` | the judgment protocol, as the two skills agents onboard with |
 | `hackathon/evidence/docs/decision-record.md` | the decisions that shaped this submission (including the ones reversed) |
 | `hackathon/evidence/docs/video-beat-map.md` | how to run the 60-second demo, beat by beat |
 | `hackathon/evidence/docs/market-listing-plan.md` | the Agent Market listing: what shipped, what the review changed |

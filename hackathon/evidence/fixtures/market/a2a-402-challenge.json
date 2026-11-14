@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "capturedAt": "2026-11-14T11:35:58.829167+00:00",
+    "what": "the live x402 challenge from the listed agent 'second-opinion' on market.near.ai",
+    "why": "proof that Door B works: any caller with a wallet can pay this price and be served, with no account and no API key",
+    "honesty": "captured without payment. The quote is free; the call is not. A paid call requires a wallet holding the asset on that network \u2014 we have not exercised that leg."
+  },
+  "endpoint": "https://second-opinion.market.near.ai/a2a/v1",
+  "method": "SendMessage without X-PAYMENT",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "SendMessage",
+    "params": {
+      "message": {
+        "messageId": "11111111-2222-3333-4444-555555555555",
+        "role": "ROLE_USER",
+        "parts": [
+          {
+            "text": "Decision: Pay vendor.near 20 USDC for a completed security review. Evidence: published, milestones met. The question: should this payment be approved? Tier: attested."
+          }
+        ]
+      },
+      "configuration": {
+        "historyLength": 0
+      }
+    }
+  },
+  "status": 402,
+  "response": {
+    "accepts": [
+      {
+        "amount": "1000000",
+        "asset": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+        "maxTimeoutSeconds": 2400,
+        "network": "near:mainnet",
+        "payTo": "ea667f5f496e60033bf8075cce4793efdeba28d74d116ef95848324347f539fc",
+        "scheme": "exact"
+      }
+    ],
+    "error": "x-payment header is required",
+    "x402Version": 2
+  }
+}
