@@ -275,10 +275,13 @@ receipt is honestly marked "omitted until live", not faked.
 | **Integration** — another service buying judgment | the verdict-oracle seam: a brief in, a card out; settlement untouched — the same seam our market worker uses | nothing of ours to host |
 
 No sales motion and no invite list: buyers find the listing or learn the purchase
-from the skill; jurors join by meeting a published bar, not by our approval. The
-buyers we built for — a treasury releasing a milestone payout, procurement paying
-an invoice, a grants program funding a deliverable, security triage approving an
-exception — share one shape: a spend someone will have to justify.
+from the skill; jurors join by meeting a published bar, not by our approval.
+
+Who buys it: **DAOs and treasury teams** releasing milestone payouts, grants and
+contractor invoices; **finance teams that already run a requestor → reviewer →
+approver flow** and want an independent opinion before the approver signs;
+**agent platforms** that need a pre-spend check their operators can audit. One
+shape across all of them: a spend someone will have to justify later.
 
 ## The market protocol — how the jury assembles
 
